@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import LoginPopUp from "./PopUps/LoginPopUp"
-import RegisterPopUp from "./PopUps/ResgiterPopUp"
+import { useAuth0 } from "@auth0/auth0-react";
 
-const Navbar = ({ setLoginOpen, setRegisterOpen }) => {
+const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
 
   return (
-    <nav className="bg-white/10 text-white py-4 px-8 flex items-center justify-between rounded-b-lg shadow-lg backdrop-blur-2xl border-b border-white/20 relative">
-      {/* Logo a la izquierda */}
+<nav className="fixed top-0 left-0 w-full z-50 bg-white/10 text-white py-4 px-8 flex items-center justify-between shadow-lg backdrop-blur-2xl border-b border-white/20">      {/* Logo a la izquierda */}
       <div className="text-3xl font-bold">Luchito</div>
 
-      {/* Contenedor del menú central: flex-grow y justify-center */}
+      {/* Contenedor del menú central */}
       <div className="hidden md:flex flex-grow justify-center gap-6">
         {["Persona", "Empresa", "Nosotros", "Ayuda", "Blog"].map((item) => (
           <a
@@ -25,18 +24,42 @@ const Navbar = ({ setLoginOpen, setRegisterOpen }) => {
 
       {/* Botones a la derecha */}
       <div className="hidden md:flex gap-4">
-        <button
-          className="border border-white rounded px-4 py-1 hover:bg-white hover:text-purple-600 transition duration-200"
-          onClick={() => setLoginOpen(true)}
-        >
-          Iniciar sesión
-        </button>
-        <button
-          className="bg-red-500 rounded px-4 py-1 hover:bg-red-600 transition duration-200"
-          onClick={() => setRegisterOpen(true)}
-        >
-          Regístrate
-        </button>
+        {isAuthenticated ? (
+          <>
+            {/* Imagen de perfil */}
+            <div className="flex items-center gap-2">
+              <img
+                src={user.picture}
+                alt={user.name}
+                className="w-8 h-8 rounded-full border border-white"
+              />
+              <span className="text-sm">{user.name}</span>
+            </div>
+
+            {/* Botón de Cerrar sesión */}
+            <button
+              className="border border-white rounded px-4 py-1 hover:bg-white hover:text-purple-600 transition duration-200"
+              onClick={() => logout({ returnTo: window.location.origin })}
+            >
+              Cerrar sesión
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="border border-white rounded px-4 py-1 hover:bg-white hover:text-purple-600 transition duration-200"
+              onClick={() => loginWithRedirect()}
+            >
+              Iniciar sesión
+            </button>
+            <button
+              className="bg-red-500 rounded px-4 py-1 hover:bg-red-600 transition duration-200"
+              onClick={() => loginWithRedirect()}
+            >
+              Regístrate
+            </button>
+          </>
+        )}
       </div>
 
       {/* Menú hamburguesa para móviles */}
@@ -57,29 +80,45 @@ const Navbar = ({ setLoginOpen, setRegisterOpen }) => {
               key={item}
               href={`#${item.toLowerCase()}`}
               className="text-white font-medium hover:text-purple-300 hover:underline hover:decoration-2 hover:underline-offset-8 transition duration-200"
-              onClick={() => setMenuOpen(false)} // Cierra el menú al hacer clic
+              onClick={() => setMenuOpen(false)}
             >
               {item}
             </a>
           ))}
-          <button
-            className="border border-white rounded px-6 py-2 hover:bg-white hover:text-purple-600 transition duration-200"
-            onClick={() => {
-              setLoginOpen(true);
-              setMenuOpen(false);
-            }}
-          >
-            Iniciar sesión
-          </button>
-          <button 
-            className="bg-red-500 rounded px-6 py-2 hover:bg-red-600 transition duration-200"
-            onClick={() => {
-              setRegisterOpen(true);
-              setMenuOpen(false);
-            }}
-          >
-            Regístrate
-          </button>
+
+          {isAuthenticated ? (
+            <>
+              <div className="flex flex-col items-center gap-2">
+                <img
+                  src={user.picture}
+                  alt={user.name}
+                  className="w-12 h-12 rounded-full border border-white"
+                />
+                <span className="text-white text-sm">{user.name}</span>
+              </div>
+              <button
+                className="border border-white rounded px-6 py-2 hover:bg-white hover:text-purple-600 transition duration-200"
+                onClick={() => logout({ returnTo: window.location.origin })}
+              >
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="border border-white rounded px-6 py-2 hover:bg-white hover:text-purple-600 transition duration-200"
+                onClick={() => loginWithRedirect()}
+              >
+                Iniciar sesión
+              </button>
+              <button
+                className="bg-red-500 rounded px-6 py-2 hover:bg-red-600 transition duration-200"
+                onClick={() => loginWithRedirect()}
+              >
+                Regístrate
+              </button>
+            </>
+          )}
         </div>
       )}
     </nav>
