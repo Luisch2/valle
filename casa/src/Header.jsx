@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header className="w-full">
 
-      {/* Barra superior */}
+      {/* Barra superior de arriba */}
       <div className="bg-teal-700 text-white text-sm">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-4">
 
