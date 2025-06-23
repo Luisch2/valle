@@ -1,10 +1,10 @@
-import React from "react";
-import Principal from "./components/Principal.jsx";
+import { Routes, Route } from "react-router-dom";
+import CentralUsuario from "./components/usuario/Centralusuario";
 
-const App = () => {
+export default function App() {
   return (
-    <Principal/>
-  )
+    <Routes>
+      <Route path="/usuario/*" element={<CentralUsuario />} />
+    </Routes>
+  );
 }
-
-export default App
